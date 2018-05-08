@@ -1,0 +1,1 @@
+<app-list-item *ngFor="let todo of tasks; trackBy: identify" [task]="todo" (delete)="deleteTask($event)" (update)="updateTask($event)"></app-list-item>
