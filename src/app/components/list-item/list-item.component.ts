@@ -11,12 +11,17 @@ export class ListItemComponent implements OnInit {
   @Input() task: Task;
   @Output() delete = new EventEmitter();
   @Output() update = new EventEmitter();
+  @Output() edit = new EventEmitter();
+  editButtonClicked: number;
+  isEdit: boolean;
 
   constructor(
     public server: JsonplaceholderService
   ) { }
 
   ngOnInit() {
+    this.server.editButtonClick.subscribe(id => this.editButtonClicked = id);
+    this.server.isEditForm.subscribe(value => this.isEdit = value);
   }
 
   deleteOneTask() {
@@ -30,5 +35,8 @@ export class ListItemComponent implements OnInit {
       userId: this.task.userId
     });
   }
-
+  editTask() {
+    const updateTask = Object.assign({}, this.task);
+    this.edit.emit(updateTask);
+  }
 }
