@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Task } from '../../models/Task';
-import { JsonplaceholderService } from '../../services/jsonplaceholder.service';
+import { JasonplaceholderService } from '../../services/jasonplaceholder.service';
 
 @Component({
   selector: 'app-list-item',
@@ -10,33 +10,36 @@ import { JsonplaceholderService } from '../../services/jsonplaceholder.service';
 export class ListItemComponent implements OnInit {
   @Input() task: Task;
   @Output() delete = new EventEmitter();
-  @Output() update = new EventEmitter();
+  @Output() changeComplete = new EventEmitter();
   @Output() edit = new EventEmitter();
-  editButtonClicked: number;
   isEdit: boolean;
+  taskId: number;
 
   constructor(
-    public server: JsonplaceholderService
+    public server: JasonplaceholderService
   ) { }
 
   ngOnInit() {
-    this.server.editButtonClick.subscribe(id => this.editButtonClicked = id);
-    this.server.isEditForm.subscribe(value => this.isEdit = value);
+    this.server.changingTask.subscribe((isEdit: boolean) => {
+        this.isEdit = isEdit;
+    });
+    this.server.clickingTask.subscribe(id => {
+      this.taskId = id;
+    });
+  }
+
+  editTask() {
+    const newTask = Object.assign({}, this.task);
+    this.edit.emit(newTask);
+    this.taskId = this.task.id;
   }
 
   deleteOneTask() {
-   this.delete.emit(this.task.id);
+    this.delete.emit(this.task.id);
   }
-  updateOneTask() {
-    this.update.emit({
-      completed: this.task.completed,
-      id: this.task.id,
-      title: this.task.title,
-      userId: this.task.userId
-    });
+
+  doneUndoneOneTask() {
+    this.changeComplete.emit({'id': this.task.id, 'completed': this.task.completed});
   }
-  editTask() {
-    const updateTask = Object.assign({}, this.task);
-    this.edit.emit(updateTask);
-  }
+
 }

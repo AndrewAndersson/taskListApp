@@ -7,13 +7,11 @@ import { HomeComponent } from './components/home/home.component';
 import { FormComponent } from './components/form/form.component';
 import { ListComponent } from './components/list/list.component';
 import { ListItemComponent } from './components/list-item/list-item.component';
-import { JsonplaceholderService } from './services/jsonplaceholder.service';
+import { JasonplaceholderService } from './services/jasonplaceholder.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import { NavbarComponent } from './components/navbar/navbar.component';
-
-
 
 @NgModule({
   declarations: [
@@ -22,7 +20,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     FormComponent,
     ListComponent,
     ListItemComponent,
-    NavbarComponent
+    NavbarComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,7 +28,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     FormsModule,
     FlashMessagesModule.forRoot()
   ],
-  providers: [JsonplaceholderService],
+  providers: [JasonplaceholderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

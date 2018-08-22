@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-describe('less3-app App', () => {
+describe('tasks-app App', () => {
   let page: AppPage;
 
   beforeEach(() => {

@@ -1,8 +1,8 @@
-<div class="card mt-3" [ngClass]="{'bg-success text-white': task.completed}">
-    <div class="card-body" [ngClass]="{'bg-primary': task.id === editButtonClicked && isEdit}">
-        <p class="card-text">{{task.title}}</p>
-        <button class="btn btn-primary" (click)="editTask()" [ngClass]="{'btn-success': task.id === editButtonClicked && isEdit}">Edit</button>
-        <button class="btn btn-danger" (click)="deleteOneTask()">Delete</button>
-        <button class="btn" [ngClass]="{'btn-primary': task.completed, 'btn-danger': !task.completed}" (click)="updateOneTask()">{{task.completed? 'Undone': 'Done'}}</button>
-    </div>
+<div class="card mt-3" [ngClass]="{'bg-success text-white': task.completed, 'border-danger border-1': isEdit && task.id === taskId}">
+  <div class="card-body">
+    <p>{{task.title}}</p>
+    <button class="btn btn-primary" (click)="editTask()" [disabled]="isEdit && task.id === taskId">Edit</button>
+    <button class="btn btn-danger" (click)="deleteOneTask()" [disabled]="isEdit && task.id === taskId">Delete</button>
+    <button class="btn btn-primary" (click)="doneUndoneOneTask()" [disabled]="isEdit && task.id === taskId">{{task.completed? 'Undone': 'Done'}}</button>
+  </div>
 </div>

@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { JsonplaceholderService } from '../../services/jsonplaceholder.service';
+import { JasonplaceholderService } from '../../services/jasonplaceholder.service';
 import { Task } from '../../models/Task';
 import { FlashMessagesService } from 'angular2-flash-messages';
-import { error } from 'util';
 
 @Component({
   selector: 'app-form',
@@ -11,42 +10,43 @@ import { error } from 'util';
 })
 export class FormComponent implements OnInit {
   title: string;
-  isEdit: boolean;
-  currentTaskId: number;
   @ViewChild('form') form;
+  isEdit: boolean;
+  taskId: number;
 
   constructor(
-    public server: JsonplaceholderService,
-    public flashMessage: FlashMessagesService
+    private server: JasonplaceholderService,
+    private flashmessageses: FlashMessagesService
   ) { }
 
   ngOnInit() {
-    this.server.editingTask.subscribe((task: Task) => {
-      if (task.title) {
+    this.server.editingTask.subscribe((data: Task) => {
+      if (data.title) {
         this.isEdit = true;
-        this.title = task.title;
-        this.currentTaskId = task.id;
+        this.title = data.title;
+        this.taskId = data.id;
+        this.server.emitChangeTask(this.isEdit);
       }
     });
   }
+
   addTask() {
-    const newTask = {
+    const newTask: Task = {
       userId: 1,
-      completed: false,
-      title: this.title
+      title: this.title,
+      completed: false
     };
     this.server.addTask(newTask).subscribe((data: Task) => {
-      console.log('add task', data);
       this.form.reset();
       this.server.emitNewTask(data);
-      this.flashMessage.show('Success!', {
+      this.flashmessageses.show('Success!!!', {
         cssClass: 'alert-success',
         showCloseBtn: true,
         closeOnClick: true,
         timeout: 10000
       });
     }, error => {
-      this.flashMessage.show(error.message, {
+      this.flashmessageses.show(error.message, {
         cssClass: 'alert-danger',
         showCloseBtn: true,
         closeOnClick: true,
@@ -54,27 +54,29 @@ export class FormComponent implements OnInit {
       });
     });
   }
+
   editTask() {
-    const updateTask = {
-      id: this.currentTaskId,
+    const newTask = {
+      id: this.taskId,
+      title: this.title,
       userId: 1,
-      completed: false,
-      title: this.title
+      completed: false
     };
-    this.server.editTask(updateTask).subscribe((task: Task) => {
-      console.log('edit Task ', task);
-      this.form.reset();
-      this.isEdit = false;
-      this.server.emitUpdateTask(task);
-      this.server.emitIsEditForm(this.isEdit);
-      this.flashMessage.show('edit success!', {
-        cssClass: 'alert-success',
-        showCloseBtn: true,
-        closeOnClick: true,
-        timeout: 10000
-      });
+    this.server.editTask(newTask).subscribe((data: Task) => {
+      if (data['body']) {
+        this.server.emitUpdateTask(data['body']);
+        this.form.reset();
+        this.isEdit = false;
+        this.server.emitChangeTask(this.isEdit);
+        this.flashmessageses.show('Update success!!!', {
+          cssClass: 'alert-success',
+          showCloseBtn: true,
+          closeOnClick: true,
+          timeout: 10000
+        });
+      }
     }, error => {
-      this.flashMessage.show(error.message, {
+      this.flashmessageses.show(error.message, {
         cssClass: 'alert-danger',
         showCloseBtn: true,
         closeOnClick: true,
@@ -82,10 +84,10 @@ export class FormComponent implements OnInit {
       });
     });
   }
-  closeTask() {
+  cancelEdit() {
     this.form.reset();
     this.isEdit = false;
-    this.server.emitIsEditForm(this.isEdit);
+    this.server.emitChangeTask(false);
   }
 
 }

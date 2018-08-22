@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { JsonplaceholderService } from '../../services/jsonplaceholder.service';
+import { JasonplaceholderService } from '../../services/jasonplaceholder.service';
 
 @Component({
   selector: 'app-navbar',
@@ -8,17 +8,19 @@ import { JsonplaceholderService } from '../../services/jsonplaceholder.service';
 })
 export class NavbarComponent implements OnInit {
   todoLength: number;
-  lastMessage: string;
+  todoText: string;
 
   constructor(
-    private server: JsonplaceholderService
+    private server: JasonplaceholderService
   ) { }
 
   ngOnInit() {
-    this.server.taskCount.subscribe(length => this.todoLength = length);
+    this.server.taskCount.subscribe(length => {
+      this.todoLength = length;
+    });
     this.server.newTask.subscribe(data => {
       if (data['body']) {
-        this.lastMessage = data['body'].title;
+        this.todoText = data['body'].title;
       }
     });
   }
